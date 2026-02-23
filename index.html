@@ -1,0 +1,169 @@
+<!-- =========================
+     index.html (COPY-PASTE)
+     ========================= -->
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+       <meta charset="UTF-8" />
+       <title>JAT</title>
+       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+       <link rel="stylesheet" href="style.css" />
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+     </head>
+     <body>
+     
+       <main class="container">
+         <section class="card">
+     
+           <!-- Dynamic Island (inside card). Hover expands on desktop, tap toggles on mobile. -->
+           <button class="island" id="island" type="button" aria-label="Clock widget" aria-expanded="false">
+             <div class="island-compact" aria-hidden="false">
+               <span class="island-ampm" id="clock-ampm">AM</span>
+               <span class="island-time" id="clock-time">00:00:00</span>
+             </div>
+     
+             <div class="island-expanded" aria-hidden="true">
+               <span class="island-day" id="clock-day">MONDAY</span>
+               <span class="island-date" id="clock-date">23 / 02 / 2026</span>
+             </div>
+           </button>
+     
+          <div class="avatar-wrap">
+            <div class="avatar">
+              <img src="luffy.jpg" alt="Luffy avatar" />
+            </div>
+          </div>
+     
+      <h1 class="name" onmousedown="return false" oncopy="return false">JAT</h1>
+      <p class="details" onmousedown="return false" oncopy="return false">22</p>
+     
+           <nav class="links" aria-label="Links">
+             <a href="https://www.instagram.com/not.jat04/" target="_blank" rel="noopener" aria-label="Instagram">
+               <span class="link-icon"><i class="fa-brands fa-instagram"></i></span>
+               <span class="link-label">Instagram</span>
+             </a>
+     
+             <a href="https://github.com/JATnpc" target="_blank" rel="noopener" aria-label="GitHub">
+               <span class="link-icon"><i class="fa-brands fa-github"></i></span>
+               <span class="link-label">GitHub</span>
+             </a>
+     
+            <a href="https://www.roblox.com/users/2913381143/profile" target="_blank" rel="noopener" aria-label="Roblox" class="icon-roblox">
+              <span class="link-icon"><img src="roblox.png" alt="Roblox" width="22" height="22" /></span>
+              <span class="link-label">Roblox</span>
+            </a>
+            <a href="https://konect.gg/jat" target="_blank" rel="noopener" aria-label="Konect" class="icon-konect">
+              <span class="link-icon"><i class="fa-solid fa-link"></i></span>
+              <span class="link-label">Konect</span>
+            </a>
+            <!-- Konect link removed per request -->
+           </nav>
+            <div class="spotify-inline">
+              <iframe title="Spotify Embed: Recommendation Playlist" src="https://open.spotify.com/embed/playlist/6ekdLu4S0sCQ2izZAHxXUx?utm_source=generator&theme=0" width="100%" height="120" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          
+     
+         </section>
+       </main>
+  
+
+       <script>
+         // =========================
+         // app.js (inlined) — clock + tap-to-toggle island
+         // =========================
+         (function () {
+           const island = document.getElementById("island");
+     
+           const ampmEl = document.getElementById("clock-ampm");
+           const timeEl = document.getElementById("clock-time");
+           const dayEl  = document.getElementById("clock-day");
+           const dateEl = document.getElementById("clock-date");
+     
+           const timeOptions = {
+             timeZone: "Asia/Manila",
+             hour12: true,
+             hour: "numeric",
+             minute: "2-digit",
+             second: "2-digit",
+           };
+     
+           function pad2(n){ return String(n).padStart(2, "0"); }
+     
+           function updateClock() {
+             const now = new Date();
+     
+             // time + AM/PM
+             const str = now.toLocaleTimeString("en-US", timeOptions);
+             const match = str.match(/^(\d+:\d+:\d+)\s*(AM|PM)$/);
+             if (match) {
+               timeEl.textContent = match[1];
+               ampmEl.textContent = match[2];
+             } else {
+               timeEl.textContent = str;
+             }
+     
+             // Day name in Manila time
+             const weekday = now.toLocaleDateString("en-US", { timeZone: "Asia/Manila", weekday: "long" });
+             dayEl.textContent = weekday.toUpperCase();
+     
+             // Date (DD / MM / YYYY) in Manila time
+             const ph = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+             const dd = pad2(ph.getDate());
+             const mm = pad2(ph.getMonth() + 1);
+             const yyyy = ph.getFullYear();
+             dateEl.textContent = `${dd} / ${mm} / ${yyyy}`;
+           }
+     
+           // Tap toggle (mobile)
+           island.addEventListener("click", () => {
+             island.classList.toggle("island-open");
+             const expanded = island.classList.contains("island-open");
+             island.setAttribute("aria-expanded", expanded ? "true" : "false");
+     
+             // set aria-hidden for child blocks
+             const compact = island.querySelector(".island-compact");
+             const expandedEl = island.querySelector(".island-expanded");
+             compact.setAttribute("aria-hidden", expanded ? "true" : "false");
+             expandedEl.setAttribute("aria-hidden", expanded ? "false" : "true");
+           });
+     
+           // Close when clicking outside (nice on mobile)
+           document.addEventListener("click", (e) => {
+             if (!island.contains(e.target)) {
+               island.classList.remove("island-open");
+               island.setAttribute("aria-expanded", "false");
+               island.querySelector(".island-compact").setAttribute("aria-hidden", "false");
+               island.querySelector(".island-expanded").setAttribute("aria-hidden", "true");
+             }
+           });
+
+          // Prevent copying the name/details text (best-effort)
+          function hasAncestorClass(node, className) {
+            while (node) {
+              if (node.nodeType === 1 && node.classList && node.classList.contains(className)) return true;
+              node = node.parentNode;
+            }
+            return false;
+          }
+
+          document.addEventListener('copy', (e) => {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed) return;
+            const anchor = sel.anchorNode;
+            const focus = sel.focusNode;
+            if (hasAncestorClass(anchor, 'name') || hasAncestorClass(focus, 'name') || hasAncestorClass(anchor, 'details') || hasAncestorClass(focus, 'details')) {
+              e.preventDefault();
+            }
+          });
+     
+           updateClock();
+           setInterval(updateClock, 1000);
+         })();
+       </script>
+
+  
+      <script>
+        // Spotify embed in place of local player - no inline JS required
+      </script>
+     </body>
+     </html>

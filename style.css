@@ -1,0 +1,378 @@
+/* =========================
+   style.css (COPY-PASTE)
+   ========================= */
+   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+   :root{
+     --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+   
+     /* Dark minimalist */
+     --bg: #1f2a38;
+     --card: rgba(255,255,255,0.06);
+     --card-border: rgba(255,255,255,0.10);
+     --text: rgba(255,255,255,0.92);
+     --muted: rgba(255,255,255,0.62);
+     --accent: rgba(255,255,255,0.95);
+   }
+   
+   body{
+     min-height: 100vh;
+     display: grid;
+     place-items: center;
+     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+     background: var(--bg);
+     color: var(--text);
+     overflow-x: hidden;
+   }
+   
+   .container{
+     width: 100%;
+     padding: 24px;
+     display: flex;
+     justify-content: center;
+   }
+   
+  .card{
+    position: relative;
+    width: min(440px, 92vw);
+    padding: 160px 48px 24px; /* reduced bottom padding so content sits closer to spotify */
+     border-radius: 18px;
+     background: var(--card);
+     border: 1px solid var(--card-border);
+     backdrop-filter: blur(12px);
+     text-align: center;
+   
+     box-shadow: 0 20px 70px rgba(0,0,0,0.35);
+   }
+   
+   /* =========================
+      Dynamic Island (inside card)
+      ========================= */
+   .island{
+     position: absolute;
+     top: 22px;
+     left: 50%;
+     transform: translateX(-50%);
+   
+     width: 230px;
+     height: 74px;
+   
+     background: #000;
+     border: none;
+     border-radius: 9999px;
+   
+     display: grid;
+     place-items: center;
+     padding: 12px 22px;
+   
+     cursor: pointer;
+     z-index: 3;
+   
+     box-shadow:
+       0 14px 40px rgba(0, 0, 0, 0.45),
+       0 4px 14px rgba(0, 0, 0, 0.25);
+   
+     transition:
+       width 0.35s var(--ease-out),
+       height 0.35s var(--ease-out),
+       box-shadow 0.35s var(--ease-out),
+       transform 0.35s var(--ease-out);
+   }
+   
+   .island:focus-visible{
+     outline: 2px solid rgba(255,255,255,0.30);
+     outline-offset: 4px;
+   }
+   
+   .island-compact,
+   .island-expanded{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     gap: 2px;
+   
+     transition:
+       opacity 0.25s var(--ease-out),
+       transform 0.35s var(--ease-out);
+   }
+   
+   /* Default: compact visible */
+   .island-expanded{
+     position: absolute;
+     opacity: 0;
+     transform: translateY(6px);
+     pointer-events: none;
+   }
+   
+   /* Hover expand (desktop) */
+   @media (hover:hover) and (pointer:fine){
+    /* On hover we only reveal the expanded content; do not change size */
+    .island:hover{
+      box-shadow:
+        0 18px 55px rgba(0, 0, 0, 0.55),
+        0 6px 18px rgba(0, 0, 0, 0.30);
+    }
+
+    .island:hover .island-compact{
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    .island:hover .island-expanded{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Make the expanded date the same size as the clock time when visible */
+  .island:hover .island-expanded .island-date,
+  .island.island-open .island-expanded .island-date {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+   
+   /* Tap expand (mobile) */
+   .island.island-open{
+     width: 360px;
+     height: 96px;
+     box-shadow:
+       0 18px 55px rgba(0, 0, 0, 0.55),
+       0 6px 18px rgba(0, 0, 0, 0.30);
+   }
+   
+   .island.island-open .island-compact{
+     opacity: 0;
+     transform: translateY(-6px);
+   }
+   
+   .island.island-open .island-expanded{
+     opacity: 1;
+     transform: translateY(0);
+   }
+   
+   /* Island typography */
+   .island-ampm{
+     font-size: 10px;
+     font-weight: 800;
+     letter-spacing: 0.18em;
+     color: rgba(255,255,255,0.92);
+     text-transform: uppercase;
+   }
+   
+   .island-time{
+     font-size: 24px;
+     font-weight: 900;
+     letter-spacing: 0.02em;
+     color: #fff;
+     font-variant-numeric: tabular-nums;
+     line-height: 1;
+   }
+   
+   .island-day{
+     font-size: 11px;
+     font-weight: 900;
+     letter-spacing: 0.20em;
+     color: rgba(255,255,255,0.95);
+   }
+   
+   .island-date{
+     font-size: 16px;
+     font-weight: 900;
+     letter-spacing: 0.10em;
+     color: rgba(255,255,255,0.95);
+     font-variant-numeric: tabular-nums;
+   }
+   
+   /* =========================
+      Avatar
+      ========================= */
+   .avatar-wrap{
+     display: flex;
+     justify-content: center;
+  margin-top: 8px;
+  margin-bottom: 22px;
+   }
+   
+   .avatar{
+  width: 140px;
+  height: 140px;
+     border-radius: 50%;
+     overflow: hidden;
+     border: 2px solid rgba(255,255,255,0.18);
+     background: rgba(0,0,0,0.25);
+   
+     transition: transform 0.35s var(--ease-spring), border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+   }
+   
+   .avatar img{
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     display: block;
+   }
+   
+   .avatar-wrap:hover .avatar{
+     transform: scale(1.12);
+     border-color: rgba(255,255,255,0.35);
+     box-shadow: 0 14px 34px rgba(0,0,0,0.45);
+   }
+   
+   /* =========================
+      Name + details
+      ========================= */
+   .name{
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  transition: transform 220ms var(--ease-spring), color 180ms var(--ease-out);
+  background: linear-gradient(90deg,#fff 0%, #a7f3d0 40% , #34d399 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+   }
+   
+   .details{
+     font-size: 14px;
+     letter-spacing: 0.10em;
+     color: var(--muted);
+     margin-bottom: 30px;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    transition: transform 220ms var(--ease-spring), color 180ms var(--ease-out);
+   }
+
+  /* small divider between links and embed */
+  .spotify-embed{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));}
+  .spotify-embed .spotify-header{font-size:12px;color:var(--muted);padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.02);text-align:left}
+
+  /* Make the inline spotify embed flush with the card - no separate box */
+  .spotify-inline{margin-top:12px;border-radius:0;overflow:visible;border:0;background:transparent;padding:0}
+  .spotify-inline iframe{display:block;border:0;height:120px;width:100%;border-radius:0;background:transparent}
+
+/* Bottom visualizer */
+/* visualizer removed */
+
+
+  /* Hover animation for name/details */
+  .name:hover, .details:hover{
+    transform: translateY(-4px) scale(1.02);
+    color: rgba(255,255,255,0.98);
+  }
+   
+   /* =========================
+      Links
+      ========================= */
+   .links{
+     display: flex;
+     justify-content: center;
+     gap: 26px;
+   }
+   
+   .links a{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 6px;
+
+  position: relative; /* allow absolute label so hover won't reflow */
+  width: 54px;
+  min-height: 44px;
+   
+     text-decoration: none;
+     color: var(--muted);
+   
+     transition: color 0.25s var(--ease-out);
+   }
+   
+   .links a:hover{
+     color: var(--accent);
+   }
+   
+   .link-icon{
+     font-size: 22px;
+     transform: scale(1);
+     transition: transform 0.35s var(--ease-spring);
+   }
+   
+   .links a:hover .link-icon{
+  transform: scale(1.45);
+   }
+   
+  .link-label{
+    position: absolute;
+    left: 50%;
+    top: 92%; /* nudge label slightly up so it sits closer to the icon */
+    transform: translateX(-50%) translateY(2px);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    color: var(--muted);
+    transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out), color 0.18s var(--ease-out);
+  }
+
+  .links a:hover .link-label{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0px); /* tighter reveal */
+    color: var(--accent);
+  }
+   
+   /* Roblox icon image */
+   .links a.icon-roblox img{
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+  margin-top: 4px; /* nudge Roblox icon down */
+  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-spring);
+   }
+   
+  /* Prevent the parent .link-icon from scaling for the Roblox anchor to avoid double-scaling */
+  .links a.icon-roblox .link-icon{
+    transform: none;
+  }
+
+  .links a.icon-roblox:hover .link-icon{
+    transform: none;
+  }
+
+  .links a.icon-roblox:hover img{
+    opacity: 1;
+    transform: scale(1.12);
+  }
+   
+   /* Responsive */
+   @media (max-width: 420px){
+ .card{ padding: 160px 26px 48px; }
+     .island{ width: 210px; }
+     .island.island-open{ width: min(360px, 92vw); }
+   /* smaller avatar on narrow screens */
+   .avatar{ width: 110px; height: 110px; }
+   }
+
+/* Player + visualizer */
+.player-wrap{display:flex;justify-content:center;margin-top:26px;padding:8px}
+.player{width:min(700px,92vw);max-width:720px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.55);display:flex;flex-direction:column;align-items:center;gap:10px}
+.card-like{border:1px solid rgba(255,255,255,0.03)}
+#visualizer{width:100%;height:80px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:block}
+.player-controls{display:flex;gap:12px;align-items:center}
+.player-controls button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+.player-controls button:active{transform:translateY(1px)}
+.player-meta{color:var(--muted);font-size:13px}
+
+/* small screen tweaks */
+@media (max-width:520px){
+  #visualizer{height:64px}
+  .player-controls button{padding:8px 10px}
+}
